@@ -17,11 +17,14 @@ app.set('port', 8081);
 //Rutas/controladores por lógica
 require("./routes/rusuarios.js")(app, swig);
 require("./routes/rcanciones.js")(app, swig);
-
+require("./routes/rautores.js")(app, swig);
 // lanzar el servidor
 app.listen(app.get('port'), function() {
     console.log("Servidor activo");
 })
 app.get('/promo*', function (req, res) {
     res.send('Respuesta patrón promo* ');
+})
+app.get('/autores*', function (req, res) {
+    res.redirect('autores/');
 })
