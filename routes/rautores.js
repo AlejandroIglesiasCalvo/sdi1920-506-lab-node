@@ -1,33 +1,45 @@
-module.exports = function(app, swig) {
-    app.get("/autores", function(req, res) {
-        var autores = [ {
-            "nombre" : "pedro",
-            "grupo" : "AC/DC",
-            "rol" : "Bateria"
+module.exports = function (app, swig) {
+    app.get("/autores", function (req, res) {
+        var autores = [{
+            "nombre": "pedro",
+            "grupo": "AC/DC",
+            "rol": "Bateria"
         }, {
-            "nombre" : "Alex",
-            "grupo" : "AC/DC",
-            "rol" : "Bajo"
+            "nombre": "Alex",
+            "grupo": "AC/DC",
+            "rol": "Bajo"
         }, {
-            "nombre" : "Fran",
-            "grupo" : "AC/DC",
-            "rol" : "Cantante"
-        } ];
+            "nombre": "Fran",
+            "grupo": "AC/DC",
+            "rol": "Cantante"
+        }];
         var respuesta = swig.renderFile('views/autores.html', {
-            vendedor : 'Tienda de canciones',
-            autores : autores
+            vendedor: 'Tienda de canciones',
+            autores: autores
         });
         res.send(respuesta);
     });
     app.get('/autores/agregar', function (req, res) {
+        var roles = [{
+            "rol": "cantante"
+        }, {
+            "rol": "bateria"
+        }, {
+            "rol": "guitarrista"
+        }, {
+            "rol": "bajista"
+        }, {
+            "rol": "teclista"
+        }];
         let respuesta = swig.renderFile('views/autores-agregar.html', {
-
+            vendedor: 'Tienda de canciones',
+            roles: roles
         });
         res.send(respuesta);
     })
-    app.post("/autores", function(req, res) {
-        res.send("Autor agregado:"+req.body.nombre +"<br>"
-            +" Grupo :" +req.body.grupo +"<br>"
-            +" Rol: "+req.body.rol);
+    app.post("/autores", function (req, res) {
+        res.send("Autor agregado:" + req.body.nombre + "<br>"
+            + " Grupo :" + req.body.grupo + "<br>"
+            + " Rol: " + req.body.rol);
     });
 };
