@@ -87,11 +87,14 @@ module.exports = function(app, swig, gestorBD) {
             if ( canciones == null ){
                 res.send(respuesta);
             } else {
-                let respuesta = swig.renderFile('views/bcancion.html',
-                    {
-                        cancion : canciones[0]
-                    });
-                res.send(respuesta);
+                gestorBD.obtenerCcomentarios(canciones[0]._id, function (comentarios) {
+                    let respuesta = swig.renderFile('views/bcancion.html',
+                        {
+                            cancion : canciones[0],
+                            comentarios: comentarios
+                        });
+                    res.send(respuesta);
+                })
             }
         });
     });
