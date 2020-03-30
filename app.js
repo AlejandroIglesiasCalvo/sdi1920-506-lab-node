@@ -1,6 +1,8 @@
 //Modulos
 let express = require('express');
 let app = express();
+let fs = require('fs');
+let https = require('https');
 
 let expressSession = require('express-session');
 app.use(expressSession({
@@ -89,6 +91,13 @@ routerAudios.use(function (req, res, next) {
 app.use("/audios/", routerAudios);
 app.use(express.static('public'));
 
+app.use( function (err, req, res, next ) {
+    console.log("Error producido: " + err); //we log the error in our db
+    if (! res.headersSent) {
+        res.status(400);
+        res.send("Recurso no disponible");
+    }
+});
 // Variables
 app.set('port', 8081);
 app.set('db', 'mongodb://admin:admin@tiendamusica-shard-00-00-en3ox.mongodb.net:27017,tiendamusica-shard-00-01-en3ox.mongodb.net:27017,tiendamusica-shard-00-02-en3ox.mongodb.net:27017/test?ssl=true&replicaSet=tiendamusica-shard-0&authSource=admin&retryWrites=true&w=majority');
@@ -105,9 +114,12 @@ app.get('/', function (req, res) {
 })
 
 // lanzar el servidor
-app.listen(app.get('port'), function () {
+https.createServer({
+    key: fs.readFileSync('certificates/alice.key'),
+    cert: fs.readFileSync('certificates/alice.crt')
+}, app).listen(app.get('port'), function() {
     console.log("Servidor activo");
-})
+});
 app.get('/promo*', function (req, res) {
     res.send('Respuesta patrón promo* ');
 })
