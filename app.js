@@ -125,4 +125,4 @@ app.get('/promo*', function (req, res) {
 })
 app.get('/autores*', function (req, res) {
     res.redirect('autores/');
-})
+}) 
