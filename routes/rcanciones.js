@@ -97,37 +97,45 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
     app.get('/cancion/:id', function (req, res) {
+        let mostrar = false;
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
-        let autor = {autor: req.session.usuario};
         gestorBD.obtenerCanciones(criterio, function (canciones) {
-            if (canciones == null) {
-                res.send(respuesta);
-            } else {
-                gestorBD.obtenerCanciones(autor, function (cancionesUsuario) {
-                    if (cancionesUsuario == null) {
-                        res.send("Error al listar ");
-                    } else {
-                        gestorBD.obtenerCcomentarios(canciones[0]._id, function (comentarios) {
-                                cancionesUsuario.find(canciones[0].autor);
-                                if (cancionesUsuario == null) {
-                                    dueno = true;
-                                } else {
-                                    dueno = false;
+                if (canciones == null) {
+                    res.send(respuesta);
+                } else {
+                    gestorBD.obtenerCanciones(
+                        {"_id": gestorBD.mongo.ObjectID(req.params.id)}, function (canciones) {
+                            if (req.session.usuario && canciones[0].autor == req.session.usuario) {
+                                mostrar = true;
+                            } else {
+                                let criterio2 = {
+                                    usuario: req.session.usuario,
+                                    cancionId: gestorBD.mongo.ObjectID(req.params.id)
                                 }
-                                let respuesta = swig.renderFile('views/bcancion.html',
-                                    {
-                                        dueno: dueno,
-                                        cancion: canciones[0],
-                                        comentarios: comentarios
-                                    });
-                                res.send(respuesta);
+
+                                gestorBD.obtenerCompras(criterio2, function (compras) {
+                                    if (compras != null && compras.length > 0) {
+                                        mostrar = true;
+                                    }
+                                });
                             }
-                        )
-                    }
-                })
+
+                        })
+                    gestorBD.obtenerCcomentarios(canciones[0]._id, function (comentarios) {
+                        let respuesta = swig.renderFile('views/bcancion.html',
+                            {
+                                cancion: canciones[0],
+                                comentarios: comentarios,
+                                dueno: mostrar
+                            });
+                        res.send(respuesta);
+                    })
+                }
             }
-        })
-    });
+        )
+        ;
+    })
+    ;
 
     app.get("/publicaciones", function (req, res) {
         let criterio = {autor: req.session.usuario};
@@ -225,13 +233,20 @@ module.exports = function (app, swig, gestorBD) {
             usuario: req.session.usuario,
             cancionId: cancionId
         }
-        gestorBD.insertarCompra(compra, function (idCompra) {
-            if (idCompra == null) {
-                res.send(respuesta);
-            } else {
+        gestorBD.obtenerCompras(compra, function (compras) {
+            if (compras != null && compras.length > 0) {
                 res.redirect("/compras");
+            } else {
+                gestorBD.insertarCompra(compra, function (idCompra) {
+                    if (idCompra == null) {
+                        res.send(respuesta);
+                    } else {
+                        res.redirect("/compras");
+                    }
+                });
             }
         });
+
     });
     app.get('/compras', function (req, res) {
         var criterio = {"usuario": req.session.usuario};
@@ -254,5 +269,6 @@ module.exports = function (app, swig, gestorBD) {
             }
         });
     })
-};
+}
+;
 
