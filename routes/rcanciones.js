@@ -98,21 +98,37 @@ module.exports = function (app, swig, gestorBD) {
     });
     app.get('/cancion/:id', function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
+        let autor = {autor: req.session.usuario};
         gestorBD.obtenerCanciones(criterio, function (canciones) {
             if (canciones == null) {
                 res.send(respuesta);
             } else {
-                gestorBD.obtenerCcomentarios(canciones[0]._id, function (comentarios) {
-                    let respuesta = swig.renderFile('views/bcancion.html',
-                        {
-                            cancion: canciones[0],
-                            comentarios: comentarios
-                        });
-                    res.send(respuesta);
+                gestorBD.obtenerCanciones(autor, function (cancionesUsuario) {
+                    if (cancionesUsuario == null) {
+                        res.send("Error al listar ");
+                    } else {
+                        gestorBD.obtenerCcomentarios(canciones[0]._id, function (comentarios) {
+                                cancionesUsuario.find(canciones[0].autor);
+                                if (cancionesUsuario == null) {
+                                    dueno = true;
+                                } else {
+                                    dueno = false;
+                                }
+                                let respuesta = swig.renderFile('views/bcancion.html',
+                                    {
+                                        dueno: dueno,
+                                        cancion: canciones[0],
+                                        comentarios: comentarios
+                                    });
+                                res.send(respuesta);
+                            }
+                        )
+                    }
                 })
             }
-        });
+        })
     });
+
     app.get("/publicaciones", function (req, res) {
         let criterio = {autor: req.session.usuario};
         gestorBD.obtenerCanciones(criterio, function (canciones) {
