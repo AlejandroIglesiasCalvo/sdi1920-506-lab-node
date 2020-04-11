@@ -15,7 +15,7 @@
             {% if dueno ==false %}
             <a class="btn btn-primary pull-right" name="botonC"
                href="/cancion/comprar/{{cancion._id.toString()}}">{{ cancion.precio
-                }} €</a>
+                }} € - {{ cancion.usd }} $<</a>
             {% else %}
             <audio controls>
                 <source src="/audios/{{ cancion._id.toString() }}.mp3" type="audio/mpeg">
