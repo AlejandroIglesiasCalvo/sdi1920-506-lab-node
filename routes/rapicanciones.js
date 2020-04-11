@@ -13,6 +13,7 @@ module.exports = function(app, gestorBD) {
             }
         });
     });
+
     app.get('/cancion/:id', function (req, res) {
         var criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
         gestorBD.obtenerCanciones(criterio, function (canciones) {
@@ -40,9 +41,9 @@ module.exports = function(app, gestorBD) {
                     res.send(respuesta);
                 })
             }
-        });
-
-        app.delete("/api/cancion/:id", function(req, res) {
+        })
+    });
+    app.delete("/api/cancion/:id", function(req, res) {
         var criterio = { "_id" : gestorBD.mongo.ObjectID(req.params.id)}
 
         gestorBD.eliminarCancion(criterio,function(canciones){
@@ -64,7 +65,6 @@ module.exports = function(app, gestorBD) {
             precio : req.body.precio,
         }
         // ¿Validar nombre, genero, precio?
-
         gestorBD.insertarCancion(cancion, function(id){
             if (id == null) {
                 res.status(500);
@@ -83,9 +83,9 @@ module.exports = function(app, gestorBD) {
     });
     app.put("/api/cancion/:id", function(req, res) {
 
-        let criterio = { "_id" : gestorBD.mongo.ObjectID(req.params.id) };
+        var criterio = { "_id" : gestorBD.mongo.ObjectID(req.params.id) };
 
-        let cancion = {}; // Solo los atributos a modificar
+        var cancion = {}; // Solo los atributos a modificar
         if ( req.body.nombre != null)
             cancion.nombre = req.body.nombre;
         if ( req.body.genero != null)
@@ -107,6 +107,7 @@ module.exports = function(app, gestorBD) {
             }
         });
     });
+
     app.post("/api/autenticar/", function(req, res) {
         var seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
             .update(req.body.password).digest('hex');
