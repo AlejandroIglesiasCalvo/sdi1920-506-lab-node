@@ -7,7 +7,7 @@
         <thead>
         <tr>
             <th><a onclick="ordenarPorNombre()">Nombre</a></th>
-            <th>Genero</th>
+            <th><a onclick="ordenarPorGenero()">Genero</th>
             <th><a onclick="ordenarPorPrecio()">Precio</a></th>
             <th class="col-md-1"></th>
         </tr>
@@ -20,6 +20,7 @@
 <script>
     window.history.pushState("", "", "/cliente.html?w=canciones");
     var canciones;
+
     function cargarCanciones(){
         $.ajax({
             url: URLbase + "/cancion",
@@ -100,12 +101,44 @@
         precioDsc = !precioDsc; //invertir
         actualizarTabla(canciones);
     }
+    var abajo=false;
     function ordenarPorNombre(){
-        canciones.sort(function(a, b) {
-            if(a.nombre > b.nombre ) return 1;
-            if(a.nombre < b.nombre ) return -1;
-            return 0;
-        });
+        if(abajo){
+            canciones.sort(function(a, b) {
+                if(a.nombre > b.nombre ) return 1;
+                if(a.nombre < b.nombre ) return -1;
+                return 0;
+            });
+        }else{
+            canciones.sort(function(a, b) {
+                if(a.nombre < b.nombre ) return 1;
+                if(a.nombre > b.nombre ) return -1;
+                return 0;
+            });
+        }
+
+        actualizarTabla(canciones);
+        abajo = !abajo; //invertir
+        actualizarTabla(canciones);
+    }
+    var ascendente=false;
+    function ordenarPorGenero(){
+        if(ascendente){
+            canciones.sort(function(a, b) {
+                if(a.genero > b.genero ) return 1;
+                if(a.genero < b.genero ) return -1;
+                return 0;
+            });
+        }else{
+            canciones.sort(function(a, b) {
+                if(a.genero < b.genero ) return 1;
+                if(a.genero > b.genero ) return -1;
+                return 0;
+            });
+        }
+
+        actualizarTabla(canciones);
+        ascendente = !ascendente; //invertir
         actualizarTabla(canciones);
     }
 
