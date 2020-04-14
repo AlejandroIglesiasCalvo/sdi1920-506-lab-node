@@ -7,6 +7,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="/js/cookie.js"></script>
+  <script src="/SCRIPT/scripts.js"></script>
 </head>
 <body>
 
@@ -24,6 +25,7 @@
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav" id="barra-menu">
         <li><a onclick=widgetCanciones()>Canciones</a></li>
+        <li><a onclick=Spotify()>Spotify</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right" id="barra-menu-derecha">
 		<!-- Opciones de menú aqui -->
@@ -54,6 +56,9 @@
   }
   function widgetCanciones(){
     $( "#contenedor-principal" ).load( "widget-canciones.html");
+  }
+  function Spotify() {
+    $( "#contenedor-principal" ).load( "Spotify.html");
   }
   function detalles(_id) {
     idCancionSeleccionada = _id;
